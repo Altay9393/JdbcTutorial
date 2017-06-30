@@ -3,6 +3,7 @@ package service;
 import bi.Util;
 import dao.AddressDAO;
 import entity.Address;
+import org.h2.jdbc.JdbcSQLException;
 
 import java.sql.*;
 import java.util.ArrayList;
@@ -82,13 +83,13 @@ public class AddressService extends Util implements AddressDAO{
     public Address getById(Long id) throws SQLException {
         PreparedStatement preparedStatement = null;
 
-        String sql = "SELECT ID,COUNTRY, CITY, STREET,POST_CODE FROM ADDRESS WHERE ID=?";
+        String sql = "SELECT ID, COUNTRY, CITY, STREET, POST_CODE FROM ADDRESS WHERE ID=?";
         Address address = new Address();
         try {
             preparedStatement = connection.prepareStatement(sql);
             preparedStatement.setLong(1, id);
 
-            ResultSet resultSet = preparedStatement.executeQuery();
+            ResultSet resultSet = preparedStatement.executeQuery(sql);
 
             address.setId(resultSet.getLong("ID"));
             address.setCountry(resultSet.getString("COUNTRY"));
@@ -120,10 +121,10 @@ public class AddressService extends Util implements AddressDAO{
             preparedStatement = connection.prepareStatement(sql);
 
             preparedStatement.setString(1, address.getCountry());
-            preparedStatement.setString(1, address.getCity());
-            preparedStatement.setString(1, address.getStreet());
-            preparedStatement.setString(1, address.getPostCode());
-            preparedStatement.setLong(1, address.getId());
+            preparedStatement.setString(2, address.getCity());
+            preparedStatement.setString(3, address.getStreet());
+            preparedStatement.setString(4, address.getPostCode());
+            preparedStatement.setLong(5, address.getId());
 
             preparedStatement.executeUpdate();
         } catch (SQLException e){

@@ -15,30 +15,31 @@ import java.util.List;
 public class EmployeeService extends Util implements EmployeeDAO {
 
     private Connection connection = getConnection();
+
     @Override
     public void add(Employee employee) throws SQLException {
-        PreparedStatement preparedStatement =null;
+        PreparedStatement preparedStatement = null;
 
         String sql = "INSERT INTO EMPLOYEE (ID, FIRST_NAME, LAST_NAME, BIRTHDAY, ADDRESS_ID) " +
                 "VALUES(?,?,?,?,?)";
 
-        try{
+        try {
             preparedStatement = connection.prepareStatement(sql);
 
-            preparedStatement.setLong(1,employee.getId());
-            preparedStatement.setString(1,employee.getFirstName());
-            preparedStatement.setString(1,employee.getLastName());
-            preparedStatement.setDate(1,employee.getBirthday());
-            preparedStatement.setLong(1,employee.getAddressID());
+            preparedStatement.setLong(1, employee.getId());
+            preparedStatement.setString(2, employee.getFirstName());
+            preparedStatement.setString(3, employee.getLastName());
+            preparedStatement.setDate(4, employee.getBirthday());
+            preparedStatement.setLong(5, employee.getAddressID());
 
             preparedStatement.executeUpdate();
-        } catch (SQLException e){
+        } catch (SQLException e) {
             e.printStackTrace();
-        }finally {
-            if (preparedStatement != null){
+        } finally {
+            if (preparedStatement != null) {
                 preparedStatement.close();
             }
-            if (connection != null){
+            if (connection != null) {
                 connection.close();
             }
         }
@@ -48,7 +49,7 @@ public class EmployeeService extends Util implements EmployeeDAO {
     @Override
     public List<Employee> getAll() throws SQLException {
         List<Employee> employeeList = new ArrayList<>();
-        String sql = "SELECT ID, FIRST_NAME, LAST_NAME, , POST_CODE FROM ADDRESS";
+        String sql = "SELECT * FROM EMPLOYEE";
 
         Statement statement = null;
         try {
@@ -56,7 +57,7 @@ public class EmployeeService extends Util implements EmployeeDAO {
 
             ResultSet resultSet = statement.executeQuery(sql);
 
-            while (resultSet.next()){
+            while (resultSet.next()) {
                 Employee employee = new Employee();
                 employee.setId(resultSet.getLong("ID"));
                 employee.setFirstName(resultSet.getString("FIRST_NAME"));
@@ -66,13 +67,13 @@ public class EmployeeService extends Util implements EmployeeDAO {
 
                 employeeList.add(employee);
             }
-        } catch (SQLException e){
+        } catch (SQLException e) {
             e.printStackTrace();
         } finally {
-            if (statement != null){
+            if (statement != null) {
                 statement.close();
             }
-            if (connection != null){
+            if (connection != null) {
                 connection.close();
             }
         }
@@ -100,11 +101,11 @@ public class EmployeeService extends Util implements EmployeeDAO {
             preparedStatement.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();
-        }finally {
-            if (preparedStatement != null){
+        } finally {
+            if (preparedStatement != null) {
                 preparedStatement.close();
             }
-            if (connection != null){
+            if (connection != null) {
                 connection.close();
             }
         }
@@ -112,12 +113,55 @@ public class EmployeeService extends Util implements EmployeeDAO {
     }
 
     @Override
-    public void update(Employee employee) {
+    public void update(Employee employee) throws SQLException {
+        PreparedStatement preparedStatement = null;
 
+        String sql = "UPDATE EMPLOYEE SET FIRST_NAME =?, LAST_NAME=?, BIRTHDAY=?, ADDRESS_ID=? WHERE ID=?";
+
+        try {
+            preparedStatement = connection.prepareStatement(sql);
+
+            preparedStatement.setString(1, employee.getFirstName());
+            preparedStatement.setString(2, employee.getLastName());
+            preparedStatement.setDate(3, employee.getBirthday());
+            preparedStatement.setLong(4, employee.getAddressID());
+            preparedStatement.setLong(5, employee.getId());
+
+            preparedStatement.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            if (preparedStatement != null) {
+                preparedStatement.close();
+            }
+            if (connection != null) {
+                connection.close();
+            }
+        }
     }
 
     @Override
-    public void remove(Employee employee) {
+    public void remove(Employee employee) throws SQLException {
+        PreparedStatement preparedStatement = null;
 
+        String sql = "DELETE FROM EMPLOYEE WHERE ID=?";
+
+        try {
+            preparedStatement = connection.prepareStatement(sql);
+
+            preparedStatement.setLong(1, employee.getId());
+
+            preparedStatement.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            if (preparedStatement != null) {
+                preparedStatement.close();
+            }
+            if (connection != null) {
+                connection.close();
+            }
+
+        }
     }
 }
