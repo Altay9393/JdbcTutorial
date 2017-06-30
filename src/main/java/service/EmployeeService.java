@@ -80,7 +80,7 @@ public class EmployeeService extends Util implements EmployeeDAO {
     }
 
     @Override
-    public Employee getById(Long id) {
+    public Employee getById(Long id) throws SQLException {
         PreparedStatement preparedStatement = null;
 
         String sql = "SELECT ID,FIRST_NAME, LAST_NAME, BIRTHDAY,ADDRESS_ID FROM EMPLOYEE WHERE ID=?";
@@ -92,10 +92,10 @@ public class EmployeeService extends Util implements EmployeeDAO {
             ResultSet resultSet = preparedStatement.executeQuery();
 
             employee.setId(resultSet.getLong("ID"));
-            employee.setCountry(resultSet.getString("COUNTRY"));
-            employee.setCity(resultSet.getString("CITY"));
-            employee.setStreet(resultSet.getString("STREET"));
-            employee.setPostCode(resultSet.getString("POST_CODE"));
+            employee.setFirstName(resultSet.getString("FIRST_NAME"));
+            employee.setLastName(resultSet.getString("LAST_NAME"));
+            employee.setBirthday(resultSet.getDate("BIRTHDAY"));
+            employee.setAddressID(resultSet.getLong("ADDRESS_ID"));
 
             preparedStatement.executeUpdate();
         } catch (SQLException e) {
@@ -108,7 +108,7 @@ public class EmployeeService extends Util implements EmployeeDAO {
                 connection.close();
             }
         }
-        return address;
+        return employee;
     }
 
     @Override
